@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 440px; margin: 2rem auto;">
+  <div class="card">
+    <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center;">Two-Factor Verification</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+      Enter the 6-digit authentication code from your mobile authenticator app.
+    </p>
+
+    <form method="POST" action="{{ url_for('two_factor_verify') }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.code.label }}
+        {{ form.code(class="form-control" + (" is-invalid" if form.code.errors else ""), placeholder="123456", maxlength="6", style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-family: monospace;") }}
+        {% for error in form.code.errors %}
+          <div class="field-error" style="text-align: center;">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        {{ form.submit(class="btn btn-primary", style="width: 100%; padding: 0.75rem;") }}
+      </div>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+      <a href="{{ url_for('login') }}" style="color: #60a5fa; text-decoration: none;">Cancel and return to sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

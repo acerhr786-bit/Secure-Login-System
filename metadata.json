@@ -1,0 +1,6 @@
+{
+  "name": "SecureAuth - Secure Login System & Cybersecurity Lab",
+  "description": "A production-grade secure authentication web application featuring bcrypt hashing, CSRF protection, parameterized SQLite queries, rate limiting, session management, 2FA, password reset, and an interactive security lab.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

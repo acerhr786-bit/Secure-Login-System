@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 480px; margin: 2rem auto;">
+  <div class="card">
+    <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center;">Create Account</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+      Register securely with bcrypt hashing and CSRF protection.
+    </p>
+
+    <form method="POST" action="{{ url_for('register') }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.username.label }}
+        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="johndoe") }}
+        {% for error in form.username.errors %}
+          <div class="field-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="john@example.com") }}
+        {% for error in form.email.errors %}
+          <div class="field-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password.label }}
+        <div style="position: relative;">
+          {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), id="reg_password", placeholder="At least 8 chars, mixed case, symbol") }}
+          <button type="button" onclick="togglePass('reg_password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 0.8rem;">
+            Show
+          </button>
+        </div>
+        {% for error in form.password.errors %}
+          <div class="field-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.confirm_password.label }}
+        <div style="position: relative;">
+          {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), id="reg_confirm_password", placeholder="Repeat password") }}
+          <button type="button" onclick="togglePass('reg_confirm_password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 0.8rem;">
+            Show
+          </button>
+        </div>
+        {% for error in form.confirm_password.errors %}
+          <div class="field-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        {{ form.submit(class="btn btn-primary", style="width: 100%; padding: 0.75rem;") }}
+      </div>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1.25rem;">
+      Already have an account? <a href="{{ url_for('login') }}" style="color: #60a5fa; text-decoration: none; font-weight: 600;">Sign in here</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePass(id) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+  }
+</script>
+{% endblock %}

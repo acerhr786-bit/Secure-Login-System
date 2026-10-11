@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 440px; margin: 2rem auto;">
+  <div class="card">
+    <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center;">Sign In</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+      Enter your credentials to access the secure dashboard.
+    </p>
+
+    <form method="POST" action="{{ url_for('login') }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="name@example.com") }}
+        {% for error in form.email.errors %}
+          <div class="field-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+          {{ form.password.label(style="margin-bottom: 0;") }}
+          <a href="{{ url_for('reset_request') }}" style="color: #60a5fa; font-size: 0.8rem; text-decoration: none;">Forgot password?</a>
+        </div>
+        <div style="position: relative;">
+          {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), id="login_password", placeholder="Enter your password") }}
+          <button type="button" onclick="togglePassVisibility('login_password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 0.8rem;">
+            Show
+          </button>
+        </div>
+        {% for error in form.password.errors %}
+          <div class="field-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+        {{ form.remember(id="remember") }}
+        <label for="remember" style="font-size: 0.85rem; color: #d1d5db; cursor: pointer; margin-bottom: 0;">Remember me on this device</label>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        {{ form.submit(class="btn btn-primary", style="width: 100%; padding: 0.75rem;") }}
+      </div>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1.25rem;">
+      Need an account? <a href="{{ url_for('register') }}" style="color: #60a5fa; text-decoration: none; font-weight: 600;">Register here</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePassVisibility(id) {
+    const el = document.getElementById(id);
+    if (el.type === 'password') {
+      el.type = 'text';
+    } else {
+      el.type = 'password';
+    }
+  }
+</script>
+{% endblock %}

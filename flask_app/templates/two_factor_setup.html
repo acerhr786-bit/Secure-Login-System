@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 520px; margin: 2rem auto;">
+  <div class="card">
+    <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center;">Two-Factor Authentication Setup</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+      Scan the QR code below using Google Authenticator, Authy, or Microsoft Authenticator.
+    </p>
+
+    {% if current_user.is_totp_enabled %}
+      <div class="alert alert-success" style="text-align: center;">
+        Two-Factor Authentication is currently <strong>ACTIVE</strong> on your account.
+      </div>
+
+      <form action="{{ url_for('two_factor_disable') }}" method="POST" style="margin-top: 1.5rem; text-align: center;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to disable 2FA?');">
+          Disable Two-Factor Authentication
+        </button>
+      </form>
+    {% else %}
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="background: #fff; padding: 1rem; border-radius: 0.5rem; display: inline-block;">
+          <img src="data:image/png;base64,{{ qr_base64 }}" alt="2FA QR Code" style="width: 200px; height: 200px; display: block;">
+        </div>
+      </div>
+
+      <div style="background: #0b1120; border: 1px solid var(--border); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: center;">
+        <span style="font-size: 0.75rem; color: #9ca3af; display: block; margin-bottom: 0.25rem;">Or enter key manually:</span>
+        <code style="color: #60a5fa; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.1em;">{{ secret }}</code>
+      </div>
+
+      <form method="POST" action="{{ url_for('two_factor_setup') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+          {{ form.code.label }}
+          {{ form.code(class="form-control" + (" is-invalid" if form.code.errors else ""), placeholder="Enter 6-digit code from app", style="text-align: center; font-size: 1.25rem; letter-spacing: 0.25rem;") }}
+          {% for error in form.code.errors %}
+            <div class="field-error" style="text-align: center;">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          {{ form.submit(class="btn btn-primary", style="width: 100%; padding: 0.75rem;", value="Activate 2FA") }}
+        </div>
+      </form>
+    {% endif %}
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1.25rem;">
+      <a href="{{ url_for('dashboard') }}" style="color: #60a5fa; text-decoration: none;">&larr; Back to Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+  <!-- Welcome Banner -->
+  <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.25rem;">Welcome, {{ user.username }}!</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Personalized Security & Session Dashboard
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="{{ url_for('two_factor_setup') }}" class="btn btn-primary" style="font-size: 0.85rem;">
+        {% if user.is_totp_enabled %}Manage 2FA{% else %}Enable 2FA{% endif %}
+      </a>
+      <a href="{{ url_for('change_password') }}" class="btn" style="background: #1f2937; color: #fff; font-size: 0.85rem;">
+        Change Password
+      </a>
+    </div>
+  </div>
+
+  <!-- Security Profile Details -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+    <div class="card" style="margin-bottom: 0;">
+      <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; color: #e5e7eb;">Account Credentials</h3>
+      <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.65rem;">
+        <div><strong style="color: #9ca3af;">Username:</strong> {{ user.username }}</div>
+        <div><strong style="color: #9ca3af;">Email:</strong> {{ user.email }}</div>
+        <div><strong style="color: #9ca3af;">Account Created:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+        <div>
+          <strong style="color: #9ca3af;">Last Login:</strong> 
+          {% if user.last_login_at %}{{ user.last_login_at.strftime('%Y-%m-%d %H:%M UTC') }}{% else %}First session{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 0;">
+      <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; color: #e5e7eb;">Security Controls</h3>
+      <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.65rem;">
+        <div>
+          <strong style="color: #9ca3af;">Password Hashing:</strong> 
+          <span style="color: #86efac; font-weight: 600;">bcrypt (cost=12)</span>
+        </div>
+        <div>
+          <strong style="color: #9ca3af;">CSRF Protection:</strong> 
+          <span style="color: #86efac; font-weight: 600;">Active (Flask-WTF Token)</span>
+        </div>
+        <div>
+          <strong style="color: #9ca3af;">Two-Factor Authentication:</strong>
+          {% if user.is_totp_enabled %}
+            <span style="color: #86efac; font-weight: 600;">Enabled (RFC 6238 TOTP)</span>
+          {% else %}
+            <span style="color: #fde68a; font-weight: 600;">Disabled (Authenticator app recommended)</span>
+          {% endif %}
+        </div>
+        <div>
+          <strong style="color: #9ca3af;">Session Cookie:</strong> 
+          <span style="color: #86efac; font-weight: 600;">HttpOnly, SameSite=Lax</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Security Activity Log -->
+  <div class="card">
+    <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; color: #e5e7eb;">Recent Security Activity</h3>
+    {% if logs %}
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border); color: #9ca3af;">
+              <th style="padding: 0.6rem 0.5rem;">Event</th>
+              <th style="padding: 0.6rem 0.5rem;">Details</th>
+              <th style="padding: 0.6rem 0.5rem;">IP Address</th>
+              <th style="padding: 0.6rem 0.5rem; text-align: right;">Timestamp (UTC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              <tr style="border-bottom: 1px solid #1f2937;">
+                <td style="padding: 0.6rem 0.5rem; font-weight: 600; color: #60a5fa;">{{ log.event_type }}</td>
+                <td style="padding: 0.6rem 0.5rem; color: #d1d5db;">{{ log.details }}</td>
+                <td style="padding: 0.6rem 0.5rem; font-family: monospace; color: #9ca3af;">{{ log.ip_address }}</td>
+                <td style="padding: 0.6rem 0.5rem; text-align: right; color: #9ca3af; font-family: monospace;">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p style="color: var(--text-muted); font-size: 0.85rem;">No security activity logged yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} - SecureAuth System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --border: #1f2937;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #d97706;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(8px);
+    }
+    .brand {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: #fff; }
+    main {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: #0b1120;
+      border: 1px solid #374151;
+      border-radius: 0.5rem;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.9rem;
+    }
+    .alert-success { background: rgba(22, 163, 74, 0.15); border: 1px solid rgba(22, 163, 74, 0.3); color: #86efac; }
+    .alert-danger { background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.3); color: #fca5a5; }
+    .alert-warning { background: rgba(217, 119, 6, 0.15); border: 1px solid rgba(217, 119, 6, 0.3); color: #fde68a; }
+    .alert-info { background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #93c5fd; }
+    .field-error { color: #f87171; font-size: 0.8rem; margin-top: 0.3rem; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="{{ url_for('index') }}" class="brand">SecureAuth Core</a>
+    <nav class="nav-links">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('two_factor_setup') }}">2FA Settings</a>
+        <a href="{{ url_for('change_password') }}">Password</a>
+        <form action="{{ url_for('logout') }}" method="POST" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Logout</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('login') }}">Sign In</a>
+        <a href="{{ url_for('register') }}">Create Account</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>SecureAuth System &copy; 2026. Built with Python, Flask, Bcrypt, and WTForms for Cybersecurity Studies.</p>
+  </footer>
+</body>
+</html>
